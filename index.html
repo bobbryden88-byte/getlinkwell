@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linkwell — Write LinkedIn Outreach Emails in Seconds</title>
+<meta name="description" content="Linkwell reads any LinkedIn profile and generates a personalized outreach email in seconds. For recruiters, job seekers, and networkers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0f1a;
+  --bg2: #111728;
+  --bg3: #1a2040;
+  --accent: #4a6cf7;
+  --accent2: #764ba2;
+  --text: #f0eee8;
+  --muted: rgba(240,238,232,0.45);
+  --border: rgba(255,255,255,0.07);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 60px;
+  background: rgba(11,15,26,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.nav-logo-name { font-size: 17px; font-weight: 600; color: var(--text); }
+.nav-cta {
+  background: var(--accent); color: #fff; border: none; border-radius: 8px;
+  padding: 10px 22px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+  font-weight: 500; cursor: pointer; text-decoration: none;
+  transition: opacity 0.2s;
+}
+.nav-cta:hover { opacity: 0.85; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 40px 80px;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(74,108,247,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 60%, rgba(118,75,162,0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%, rgba(74,108,247,0.06) 0%, transparent 40%);
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: 0.03;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.hero-content { position: relative; z-index: 1; max-width: 780px; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(74,108,247,0.1); border: 1px solid rgba(74,108,247,0.25);
+  border-radius: 20px; padding: 7px 16px; margin-bottom: 36px;
+  font-size: 12px; color: #7a9cf7; letter-spacing: 0.05em;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #4a6cf7; animation: pulse 2s infinite; }
+
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(44px, 6vw, 72px);
+  line-height: 1.1; font-weight: 700;
+  margin-bottom: 24px; letter-spacing: -0.02em;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+h1 em { font-style: italic; color: var(--accent); }
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px); color: var(--muted);
+  line-height: 1.65; max-width: 560px; margin: 0 auto 44px;
+  font-weight: 300;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-cta-group {
+  display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border: none; border-radius: 10px;
+  padding: 15px 30px; font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 8px 24px rgba(74,108,247,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(74,108,247,0.4); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--muted); border: 1px solid var(--border);
+  border-radius: 10px; padding: 15px 30px; font-family: 'DM Sans', sans-serif;
+  font-size: 15px; cursor: pointer; text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+.hero-pills {
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  margin-top: 48px; flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.hero-pill { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); }
+.hero-pill-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* HOW IT WORKS */
+.section { padding: 100px 60px; max-width: 1100px; margin: 0 auto; }
+.section-label {
+  display: inline-block; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent);
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif; font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700; line-height: 1.15; margin-bottom: 16px; letter-spacing: -0.01em;
+}
+.section-sub { font-size: 17px; color: var(--muted); line-height: 1.65; max-width: 520px; margin-bottom: 60px; font-weight: 300; }
+
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.step-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 32px 28px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.step-card:hover { border-color: rgba(74,108,247,0.3); transform: translateY(-4px); }
+.step-num {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: rgba(74,108,247,0.1); border: 1px solid rgba(74,108,247,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 20px;
+}
+.step-title { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+.step-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+/* FOR BOTH SIDES */
+.both-section { padding: 80px 60px; }
+.both-inner { max-width: 1100px; margin: 0 auto; }
+.both-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 60px; }
+.both-card {
+  border-radius: 20px; padding: 40px 36px; position: relative; overflow: hidden;
+}
+.both-card.recruiter {
+  background: linear-gradient(135deg, rgba(74,108,247,0.08), rgba(74,108,247,0.02));
+  border: 1px solid rgba(74,108,247,0.15);
+}
+.both-card.jobseeker {
+  background: linear-gradient(135deg, rgba(247,74,155,0.08), rgba(247,74,155,0.02));
+  border: 1px solid rgba(247,74,155,0.15);
+}
+.both-card-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.05em; margin-bottom: 20px;
+}
+.both-card-tag.recruiter { background: rgba(74,108,247,0.15); color: #7a9cf7; border: 1px solid rgba(74,108,247,0.25); }
+.both-card-tag.jobseeker { background: rgba(247,74,155,0.15); color: #f77ab8; border: 1px solid rgba(247,74,155,0.25); }
+.both-card-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 14px; line-height: 1.2; }
+.both-card-desc { font-size: 15px; color: var(--muted); line-height: 1.65; margin-bottom: 24px; font-weight: 300; }
+.both-card-features { display: flex; flex-direction: column; gap: 10px; }
+.both-feature { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+.both-feature::before { content: '→'; color: var(--accent); font-size: 13px; }
+.both-card.jobseeker .both-feature::before { color: #f74a9b; }
+
+/* FEATURES */
+.features-section { padding: 80px 60px; background: var(--bg2); }
+.features-inner { max-width: 1100px; margin: 0 auto; }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 60px; }
+.feature-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 14px; padding: 28px 24px;
+  transition: border-color 0.2s;
+}
+.feature-card:hover { border-color: rgba(74,108,247,0.25); }
+.feature-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(74,108,247,0.1); border: 1px solid rgba(74,108,247,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 18px;
+}
+.feature-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.feature-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+/* PRICING */
+.pricing-section { padding: 100px 60px; max-width: 800px; margin: 0 auto; text-align: center; }
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 56px; text-align: left; }
+.pricing-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px 32px;
+}
+.pricing-card.featured {
+  border-color: rgba(74,108,247,0.4);
+  background: linear-gradient(135deg, rgba(74,108,247,0.08), var(--bg2));
+}
+.pricing-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; }
+.pricing-price { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 700; margin-bottom: 6px; }
+.pricing-price span { font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--muted); font-weight: 400; }
+.pricing-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.5; }
+.pricing-features { display: flex; flex-direction: column; gap: 10px; }
+.pricing-feature { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+.pricing-feature-check { color: #4af79b; font-size: 13px; }
+.pricing-btn {
+  display: block; text-align: center; margin-top: 28px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border: none; border-radius: 10px; padding: 13px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; text-decoration: none; transition: opacity 0.2s;
+}
+.pricing-btn:hover { opacity: 0.85; }
+.pricing-btn.outline {
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+}
+.pricing-btn.outline:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border); padding: 40px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; color: var(--muted);
+}
+.footer-logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--text); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .section { padding: 60px 24px; }
+  .both-section, .features-section { padding: 60px 24px; }
+  .pricing-section { padding: 60px 24px; }
+  .steps-grid, .both-grid, .features-grid, .pricing-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">🔗</div>
+    <div class="nav-logo-name">Linkwell</div>
+  </a>
+  <a href="https://chromewebstore.google.com/detail/inkwell-gmail-ai-assistant/oicpmfbmankanehinmchmbakcjmlmodc" class="nav-cta" target="_blank">Add to Chrome — Free</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      Now with LinkedIn Profile Scraping
+    </div>
+    <h1>Write LinkedIn outreach<br>emails <em>in seconds</em></h1>
+    <p class="hero-sub">Linkwell reads any LinkedIn profile and drafts a personalized email — for recruiters sourcing candidates and job seekers applying for roles.</p>
+    <div class="hero-cta-group">
+      <a href="https://chromewebstore.google.com/detail/inkwell-gmail-ai-assistant/oicpmfbmankanehinmchmbakcjmlmodc" class="btn-primary" target="_blank">
+        Add to Chrome — It's Free
+      </a>
+      <a href="#how-it-works" class="btn-secondary">See how it works</a>
+    </div>
+    <div class="hero-pills">
+      <div class="hero-pill"><div class="hero-pill-dot"></div>Reads LinkedIn profiles</div>
+      <div class="hero-pill"><div class="hero-pill-dot"></div>CV-aware emails</div>
+      <div class="hero-pill"><div class="hero-pill-dot"></div>Opens in Gmail instantly</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="section">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Three steps to a<br>ready-to-send email</h2>
+    <p class="section-sub">No tab switching, no copy-pasting. Linkwell lives in your browser and works where you already are.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Open any LinkedIn profile</div>
+        <div class="step-desc">Linkwell automatically reads the name, role, company, experience, and skills from the page — no manual input needed.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">Choose your reason & add context</div>
+        <div class="step-desc">Select from 5 outreach reasons — recruiting, applying, networking, partnership, or follow-up. Add one line of context.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Gmail opens ready to send</div>
+        <div class="step-desc">Linkwell generates the email and opens a Gmail draft with To, Subject, and Body pre-filled. Review and hit send.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR BOTH SIDES -->
+<section class="both-section">
+  <div class="both-inner">
+    <div class="section-label">Built for both sides</div>
+    <h2 class="section-title">For recruiters <em style="font-family:'Playfair Display',serif;font-style:italic;color:#f74a9b">and</em> job seekers</h2>
+    <div class="both-grid">
+      <div class="both-card recruiter">
+        <div class="both-card-tag recruiter">🏢 Recruiters</div>
+        <div class="both-card-title">Hire smarter, faster</div>
+        <div class="both-card-desc">Stop copy-pasting the same template to every candidate. Linkwell writes a unique email for each profile using their actual background.</div>
+        <div class="both-card-features">
+          <div class="both-feature">Personalized outreach at scale</div>
+          <div class="both-feature">Candidate context auto-pulled from LinkedIn</div>
+          <div class="both-feature">Role description → tailored pitch in seconds</div>
+        </div>
+      </div>
+      <div class="both-card jobseeker">
+        <div class="both-card-tag jobseeker">🎯 Job Seekers</div>
+        <div class="both-card-title">Stand out from the pile</div>
+        <div class="both-card-desc">Upload your CV once. Linkwell combines your real experience with the hiring manager's profile to write emails that feel genuinely personal.</div>
+        <div class="both-card-features">
+          <div class="both-feature">CV-aware emails using your real background</div>
+          <div class="both-feature">References the hiring manager's actual career</div>
+          <div class="both-feature">Application, follow-up, and networking flows</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="features-inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need,<br>nothing you don't</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">LinkedIn profile scraping</div>
+        <div class="feature-desc">Name, role, company, skills, experience — all captured automatically when you open a profile.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <div class="feature-title">CV upload</div>
+        <div class="feature-desc">Upload your resume once. Stored locally, never on a server. Referenced in every email you generate.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✍️</div>
+        <div class="feature-title">5 outreach reasons</div>
+        <div class="feature-desc">Recruiting, applying, networking, partnership, or follow-up. Each generates a different type of email.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">3 tone styles</div>
+        <div class="feature-desc">Professional, Casual, or Friendly. The same context, a completely different voice.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📬</div>
+        <div class="feature-title">Direct Gmail integration</div>
+        <div class="feature-desc">Drafts open in Gmail with To, Subject, and Body pre-filled. Zero copy-pasting.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📧</div>
+        <div class="feature-title">Full Gmail AI sidebar</div>
+        <div class="feature-desc">Summarize threads, compose emails, and generate smart replies — all from within Gmail.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title">Simple, honest pricing</h2>
+  <p class="section-sub" style="margin: 0 auto 0;">Free to start. Upgrade when you're ready.</p>
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-label">Free</div>
+      <div class="pricing-price">$0 <span>/month</span></div>
+      <div class="pricing-desc">Get started with no credit card required.</div>
+      <div class="pricing-features">
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> LinkedIn profile scraping</div>
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> 2 email generations per day</div>
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Gmail AI sidebar</div>
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Email summarization</div>
+      </div>
+      <a href="https://chromewebstore.google.com/detail/inkwell-gmail-ai-assistant/oicpmfbmankanehinmchmbakcjmlmodc" class="pricing-btn outline" target="_blank">Get started free</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-label">Pro</div>
+      <div class="pricing-price">CA$4.99 <span>/month</span></div>
+      <div class="pricing-desc">For recruiters and job seekers who send emails every day.</div>
+      <div class="pricing-features">
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Everything in Free</div>
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Unlimited email generations</div>
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> CV upload & parsing</div>
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Priority support</div>
+        <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Advanced context options</div>
+      </div>
+      <a href="https://chromewebstore.google.com/detail/inkwell-gmail-ai-assistant/oicpmfbmankanehinmchmbakcjmlmodc" class="pricing-btn" target="_blank">Start free trial</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <span>🔗</span> Linkwell
+  </div>
+  <div>© 2026 Linkwell. All rights reserved.</div>
+  <div>
+    <a href="https://chromewebstore.google.com/detail/inkwell-gmail-ai-assistant/oicpmfbmankanehinmchmbakcjmlmodc" style="color: var(--accent); text-decoration: none;" target="_blank">Add to Chrome</a>
+  </div>
+</footer>
+
+</body>
+</html>
